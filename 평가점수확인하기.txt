@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>"2024�⵵ �ٸ��� ���� Ȯ���ϱ�"</title>
+    <title>"2024년도 다면평가 점수 확인하기"</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,30 +36,293 @@
 <body>
 
 <div class="container">
-    <h2 id="title">"2024�⵵ �ٸ��� ���� Ȯ���ϱ�"</h2>
+    <h2 id="title">"2024년도 다면평가 점수 확인하기"</h2>
 
     <div id="lookup-form">
         <div class="error" id="lookup-error"></div>
-        <input type="text" id="ssn" placeholder="�ֹε�Ϲ�ȣ �Է��ϱ�( - ���� �Է����ּ���)" required>
-        <button onclick="lookup()">�����ϱ�</button>
+        <input type="text" id="ssn" placeholder="주민등록번호 입력하기( - 까지 입력해주세요)" required>
+        <button onclick="lookup()">제출하기</button>
     </div>
 
     <div id="profile" class="hidden">
-        <h3>�ȳ��ϼ���, <span id="user-name"></span>!</h3>
-        <p>������ �������� : <span id="user-info"></span>�Դϴ�.</p>
-        <button onclick="logout()">�����ϱ�</button>
+        <h3>안녕하세요, <span id="user-name"></span>!</h3>
+        <p>귀하의 평가점수는 : <span id="user-info"></span>입니다.</p>
+        <button onclick="logout()">종료하기</button>
     </div>
 </div>
 
 <script>
-    // �̸� ����� ����� ������
+    // 미리 저장된 사용자 데이터
     const users = [
-        { name: "�Ǽ�ȯ", ssn: "123456-7890123", personalInfo: "A" },
-        { name: "Park Ji-sung", ssn: "987654-3210987", personalInfo: "Retired professional footballer" },
-        { name: "Lee Byung-hun", ssn: "456789-1234567", personalInfo: "Actor and director" }
+        { name: "임동만", ssn: "620524-1558812", personalInfo: "A" },
+        { name: "강봉수", ssn: "800826-1408719", personalInfo: "A" },
+        { name: "손용준", ssn: "761212-1446925", personalInfo: "A" },
+        { name: "이정현", ssn: "830628-1409623", personalInfo: "A" },
+        { name: "이중수", ssn: "900611-1471710", personalInfo: "A" },
+        { name: "전인식", ssn: "651101-1446718", personalInfo: "A" },
+        { name: "김상철", ssn: "921202-1783828", personalInfo: "A" },
+        { name: "김현기", ssn: "930524-1677815", personalInfo: "A" },
+        { name: "복기전", ssn: "751220-1464313", personalInfo: "A" },
+        { name: "송채영", ssn: "990704-2170119", personalInfo: "A" },
+        { name: "최은영", ssn: "900325-2409118", personalInfo: "A" },
+        { name: "홍영은", ssn: "980219-2491025", personalInfo: "A" },
+        { name: "유호상", ssn: "680516-1320924", personalInfo: "A" },
+        { name: "김병기", ssn: "751225-1447114", personalInfo: "A" },
+        { name: "차재민", ssn: "611029-1117111", personalInfo: "A" },
+        { name: "김언규", ssn: "680730-1460035", personalInfo: "A" },
+        { name: "김구철", ssn: "800218-1386125", personalInfo: "A" },
+        { name: "김도현", ssn: "981007-1408915", personalInfo: "A" },
+        { name: "김정수", ssn: "970623-1409318", personalInfo: "A" },
+        { name: "박종우", ssn: "910606-1403723", personalInfo: "A" },
+        { name: "이상엽", ssn: "810609-1079735", personalInfo: "A" },
+        { name: "김덕수", ssn: "830510-1178411", personalInfo: "A" },
+        { name: "표세직", ssn: "980727-1457311", personalInfo: "A" },
+        { name: "김진백", ssn: "681025-1558114", personalInfo: "A" },
+        { name: "서윤원", ssn: "771108-1452528", personalInfo: "A" },
+        { name: "한형덕", ssn: "921113-1410917", personalInfo: "A" },
+        { name: "박흥범", ssn: "720316-1224124", personalInfo: "A" },
+        { name: "김경익", ssn: "961123-1357314", personalInfo: "A" },
+        { name: "김선철", ssn: "770609-1634412", personalInfo: "A" },
+        { name: "박범준", ssn: "971028-1387116", personalInfo: "A" },
+        { name: "백필수", ssn: "750505-1400111", personalInfo: "A" },
+        { name: "안도혁", ssn: "851004-1410210", personalInfo: "A" },
+        { name: "오상우", ssn: "810803-1466321", personalInfo: "A" },
+        { name: "이기표", ssn: "850625-1350113", personalInfo: "A" },
+        { name: "최기주", ssn: "961124-1798518", personalInfo: "A" },
+        { name: "황채주", ssn: "820726-1155823", personalInfo: "A" },
+        { name: "김태형", ssn: "920817-1408614", personalInfo: "A" },
+        { name: "박준식", ssn: "740206-1026114", personalInfo: "A" },
+        { name: "우현기", ssn: "840430-1409311", personalInfo: "A" },
+        { name: "이규학", ssn: "780820-1384823", personalInfo: "A" },
+        { name: "이근식", ssn: "780218-1408431", personalInfo: "A" },
+        { name: "이남용", ssn: "781206-1464318", personalInfo: "A" },
+        { name: "이재우", ssn: "950107-1410314", personalInfo: "A" },
+        { name: "이정구", ssn: "690304-1449010", personalInfo: "A" },
+        { name: "이준형", ssn: "730830-1696611", personalInfo: "A" },
+        { name: "황진한", ssn: "890516-1403124", personalInfo: "A" },
+        { name: "나종훈", ssn: "911027-1409926", personalInfo: "A" },
+        { name: "박왕우", ssn: "850525-1403217", personalInfo: "A" },
+        { name: "박호연", ssn: "950809-1083215", personalInfo: "A" },
+        { name: "신관수", ssn: "800618-1466325", personalInfo: "A" },
+        { name: "황진우", ssn: "780723-1460916", personalInfo: "A" },
+        { name: "박정주", ssn: "740628-1446720", personalInfo: "A" },
+        { name: "배웅", ssn: "771104-1251613", personalInfo: "A" },
+        { name: "양진영", ssn: "710301-1446823", personalInfo: "A" },
+        { name: "윤정훈", ssn: "720305-1458311", personalInfo: "A" },
+        { name: "최병윤", ssn: "771006-1548218", personalInfo: "A" },
+        { name: "황준하", ssn: "930703-1874217", personalInfo: "A" },
+        { name: "이재봉", ssn: "830806-1402814", personalInfo: "A" },
+        { name: "이중배", ssn: "770405-1471713", personalInfo: "A" },
+        { name: "이지아", ssn: "870928-6200012", personalInfo: "A" },
+        { name: "장태훈", ssn: "931023-1403811", personalInfo: "A" },
+        { name: "전유성", ssn: "881226-1352118", personalInfo: "A" },
+        { name: "조황희", ssn: "981226-1410911", personalInfo: "A" },
+        { name: "김윤광", ssn: "741006-1030211", personalInfo: "A" },
+        { name: "이호재", ssn: "720523-1716012", personalInfo: "A" },
+        { name: "김기빈", ssn: "941017-1446716", personalInfo: "A" },
+        { name: "남재욱", ssn: "920619-1077218", personalInfo: "A" },
+        { name: "서연지", ssn: "811205-2183121", personalInfo: "A" },
+        { name: "신준선", ssn: "731117-1328922", personalInfo: "A" },
+        { name: "오유진", ssn: "950725-1785318", personalInfo: "A" },
+        { name: "최예동", ssn: "900704-1205517", personalInfo: "A" },
+        { name: "최태훈", ssn: "790930-1822618", personalInfo: "A" },
+        { name: "한영석", ssn: "810526-1464314", personalInfo: "A" },
+        { name: "김기덕", ssn: "880603-1634918", personalInfo: "A" },
+        { name: "박성준", ssn: "970528-1209510", personalInfo: "A" },
+        { name: "박종웅", ssn: "950716-1408019", personalInfo: "A" },
+        { name: "이장희", ssn: "741103-1446716", personalInfo: "A" },
+        { name: "이정호", ssn: "800403-1042313", personalInfo: "A" },
+        { name: "강용인", ssn: "990924-1410817", personalInfo: "A" },
+        { name: "심봉섭", ssn: "840220-1458415", personalInfo: "A" },
+        { name: "윤태수", ssn: "991110-1406218", personalInfo: "A" },
+        { name: "최정필", ssn: "650815-1560227", personalInfo: "A" },
+        { name: "황서하", ssn: "920912-2410321", personalInfo: "A" },
+        { name: "원승욱", ssn: "710315-1009317", personalInfo: "A" },
+        { name: "이은성", ssn: "980715-1400916", personalInfo: "A" },
+        { name: "기홍성", ssn: "700519-1653111", personalInfo: "A" },
+        { name: "유세호", ssn: "731018-1820211", personalInfo: "A" },
+        { name: "윤녕준", ssn: "831209-1126322", personalInfo: "A" },
+        { name: "김용규", ssn: "901029-1183212", personalInfo: "A" },
+        { name: "박세웅", ssn: "771125-1482611", personalInfo: "A" },
+        { name: "이동렬", ssn: "720626-1400610", personalInfo: "A" },
+        { name: "이범규", ssn: "760212-1449429", personalInfo: "A" },
+        { name: "임용수", ssn: "810417-1406313", personalInfo: "A" },
+        { name: "임홍구", ssn: "961114-1449012", personalInfo: "A" },
+        { name: "김선민", ssn: "591205-1024315", personalInfo: "A" },
+        { name: "전영효", ssn: "620127-1109010", personalInfo: "A" },
+        { name: "김동진", ssn: "780428-1459819", personalInfo: "A" },
+        { name: "조현일", ssn: "940619-1410823", personalInfo: "A" },
+        { name: "김용칠", ssn: "520929-1702611", personalInfo: "A" },
+        { name: "유재준", ssn: "590703-1030115", personalInfo: "A" },
+        { name: "이원준", ssn: "720825-1055420", personalInfo: "A" },
+        { name: "김재훈", ssn: "780626-1836619", personalInfo: "A" },
+        { name: "명대식", ssn: "690224-1401124", personalInfo: "A" },
+        { name: "전병원", ssn: "671130-1251913", personalInfo: "A" },
+        { name: "남지영", ssn: "950113-2409710", personalInfo: "A" },
+        { name: "박미현", ssn: "810605-2384111", personalInfo: "A" },
+        { name: "정진숙", ssn: "641115-2384131", personalInfo: "A" },
+        { name: "조정희", ssn: "850203-2408512", personalInfo: "A" },
+        { name: "김호현", ssn: "650215-1901311", personalInfo: "A" },
+        { name: "권인달", ssn: "570126-1779215", personalInfo: "A" },
+        { name: "김동일", ssn: "740224-1804312", personalInfo: "A" },
+        { name: "박종권", ssn: "891124-1379911", personalInfo: "A" },
+        { name: "성상묵", ssn: "790320-1451119", personalInfo: "A" },
+        { name: "오영민", ssn: "831110-1476715", personalInfo: "A" },
+        { name: "정일록", ssn: "761215-1408912", personalInfo: "A" },
+        { name: "최기성", ssn: "670213-1401121", personalInfo: "A" },
+        { name: "최하준", ssn: "850415-1384218", personalInfo: "A" },
+        { name: "신예슬", ssn: "940918-2384113", personalInfo: "A" },
+        { name: "전유석", ssn: "670726-1017129", personalInfo: "A" },
+        { name: "김용갑", ssn: "801223-1386112", personalInfo: "A" },
+        { name: "남양호", ssn: "940414-1410915", personalInfo: "A" },
+        { name: "이미영", ssn: "750205-2800916", personalInfo: "A" },
+        { name: "이준성", ssn: "880509-1384119", personalInfo: "A" },
+        { name: "권도현", ssn: "970224-1520814", personalInfo: "A" },
+        { name: "김영호", ssn: "900113-1408810", personalInfo: "A" },
+        { name: "이상규", ssn: "680215-1452925", personalInfo: "A" },
+        { name: "이재득", ssn: "800715-1384613", personalInfo: "A" },
+        { name: "정길성", ssn: "640129-1117111", personalInfo: "A" },
+        { name: "정윤재", ssn: "940729-1067513", personalInfo: "A" },
+        { name: "정재원", ssn: "870727-1405919", personalInfo: "A" },
+        { name: "정택범", ssn: "730501-1402918", personalInfo: "A" },
+        { name: "조문형", ssn: "880508-1331411", personalInfo: "A" },
+        { name: "고산", ssn: "791207-1182913", personalInfo: "A" },
+        { name: "장우혁", ssn: "701227-1119814", personalInfo: "A" },
+        { name: "윤여범", ssn: "630503-1455717", personalInfo: "A" },
+        { name: "이준서", ssn: "820707-1450721", personalInfo: "A" },
+        { name: "이진선", ssn: "970211-2403821", personalInfo: "A" },
+        { name: "허창훈", ssn: "790709-1523116", personalInfo: "A" },
+        { name: "성형식", ssn: "760227-1380112", personalInfo: "A" },
+        { name: "송근승", ssn: "880331-1405618", personalInfo: "A" },
+        { name: "주상훈", ssn: "830429-1122311", personalInfo: "A" },
+        { name: "김범진", ssn: "981116-1449334", personalInfo: "A" },
+        { name: "김수연", ssn: "980323-2410710", personalInfo: "A" },
+        { name: "남가람", ssn: "941015-2401616", personalInfo: "A" },
+        { name: "니에", ssn: "930107-6200062", personalInfo: "A" },
+        { name: "이송복", ssn: "710104-1168514", personalInfo: "A" },
+        { name: "조문현", ssn: "941026-1409919", personalInfo: "A" },
+        { name: "진민우", ssn: "900103-1042817", personalInfo: "A" },
+        { name: "허숭욱", ssn: "791214-1351118", personalInfo: "A" },
+        { name: "박용해", ssn: "600601-1806418", personalInfo: "A" },
+        { name: "김재권", ssn: "621105-1386225", personalInfo: "A" },
+        { name: "김지남", ssn: "800412-1552215", personalInfo: "A" },
+        { name: "김형원", ssn: "890701-1642714", personalInfo: "A" },
+        { name: "조이재", ssn: "901116-2580915", personalInfo: "A" },
+        { name: "고어진", ssn: "940430-1408311", personalInfo: "A" },
+        { name: "권자근", ssn: "960605-1168219", personalInfo: "A" },
+        { name: "김도연", ssn: "840914-1403811", personalInfo: "A" },
+        { name: "김도훈", ssn: "970512-1400415", personalInfo: "A" },
+        { name: "김민오", ssn: "880205-1402911", personalInfo: "A" },
+        { name: "김재훈", ssn: "940513-1403718", personalInfo: "A" },
+        { name: "김현중", ssn: "950622-1580215", personalInfo: "A" },
+        { name: "박종률", ssn: "921207-1409327", personalInfo: "A" },
+        { name: "박효신", ssn: "950119-1401315", personalInfo: "A" },
+        { name: "백민기", ssn: "920125-1065218", personalInfo: "A" },
+        { name: "손원형", ssn: "811016-1065415", personalInfo: "A" },
+        { name: "신기후", ssn: "800625-1455414", personalInfo: "A" },
+        { name: "안상혁", ssn: "970731-1410111", personalInfo: "A" },
+        { name: "여인욱", ssn: "870326-1064918", personalInfo: "A" },
+        { name: "윤지환", ssn: "881108-1042310", personalInfo: "A" },
+        { name: "이문수", ssn: "981208-1449327", personalInfo: "A" },
+        { name: "이상협", ssn: "900118-1011519", personalInfo: "A" },
+        { name: "이신우", ssn: "861228-1403215", personalInfo: "A" },
+        { name: "이영섭", ssn: "930820-1412017", personalInfo: "A" },
+        { name: "전승희", ssn: "811202-1464716", personalInfo: "A" },
+        { name: "정재민", ssn: "880815-1118210", personalInfo: "A" },
+        { name: "채승엽", ssn: "880714-1482210", personalInfo: "A" },
+        { name: "박민흥", ssn: "760929-1010211", personalInfo: "A" },
+        { name: "곽희만", ssn: "791021-1408315", personalInfo: "A" },
+        { name: "김지훈", ssn: "860703-1500913", personalInfo: "A" },
+        { name: "박은기", ssn: "790618-1446919", personalInfo: "A" },
+        { name: "손주환", ssn: "980325-1403216", personalInfo: "A" },
+        { name: "조은빈", ssn: "960802-2394819", personalInfo: "A" },
+        { name: "황철홍", ssn: "970107-1400214", personalInfo: "A" },
+        { name: "최정묵", ssn: "670323-1469316", personalInfo: "A" },
+        { name: "김철영", ssn: "761230-1106224", personalInfo: "A" },
+        { name: "우상욱", ssn: "830627-1406313", personalInfo: "A" },
+        { name: "이민규", ssn: "921226-1726211", personalInfo: "A" },
+        { name: "김신혜", ssn: "901127-2403619", personalInfo: "A" },
+        { name: "위정훈", ssn: "971027-1105717", personalInfo: "A" },
+        { name: "이정엽", ssn: "920227-1009211", personalInfo: "A" },
+        { name: "김진수", ssn: "661122-1093517", personalInfo: "A" },
+        { name: "권순환", ssn: "930222-1409111", personalInfo: "A" },
+        { name: "김명근", ssn: "741228-1805513", personalInfo: "A" },
+        { name: "전병민", ssn: "691031-1403315", personalInfo: "A" },
+        { name: "한찬희", ssn: "740113-1323415", personalInfo: "A" },
+        { name: "강소형", ssn: "900710-2400928", personalInfo: "A" },
+        { name: "김문권", ssn: "841123-1155719", personalInfo: "A" },
+        { name: "이승우", ssn: "920523-1402711", personalInfo: "A" },
+        { name: "정성훈", ssn: "810910-1448911", personalInfo: "A" },
+        { name: "김용남", ssn: "751228-1400218", personalInfo: "A" },
+        { name: "김정은", ssn: "840525-2410021", personalInfo: "A" },
+        { name: "송보인", ssn: "951016-1471216", personalInfo: "A" },
+        { name: "신현중", ssn: "881201-1025315", personalInfo: "A" },
+        { name: "이진석", ssn: "830307-1406323", personalInfo: "A" },
+        { name: "임지훈", ssn: "840822-1402710", personalInfo: "A" },
+        { name: "김성실", ssn: "770206-2453012", personalInfo: "A" },
+        { name: "박은정", ssn: "880817-2408815", personalInfo: "A" },
+        { name: "정필영", ssn: "710628-1455414", personalInfo: "A" },
+        { name: "조준희", ssn: "840903-1402816", personalInfo: "A" },
+        { name: "최정수", ssn: "890711-1408716", personalInfo: "A" },
+        { name: "조영희", ssn: "721113-1459919", personalInfo: "A" },
+        { name: "배성준", ssn: "621227-1448813", personalInfo: "A" },
+        { name: "조서옥", ssn: "600315-1466454", personalInfo: "A" },
+        { name: "권영현", ssn: "690217-1777816", personalInfo: "A" },
+        { name: "고경영", ssn: "670302-1496022", personalInfo: "A" },
+        { name: "곽진솔", ssn: "930322-2409611", personalInfo: "A" },
+        { name: "윤선진", ssn: "960605-1408910", personalInfo: "A" },
+        { name: "장성진", ssn: "931228-1095917", personalInfo: "A" },
+        { name: "전장수", ssn: "760127-1384319", personalInfo: "A" },
+        { name: "정성필", ssn: "940723-1400615", personalInfo: "A" },
+        { name: "천덕상", ssn: "790701-1822638", personalInfo: "A" },
+        { name: "허지훈", ssn: "951216-1351731", personalInfo: "A" },
+        { name: "손근석", ssn: "840930-1704018", personalInfo: "A" },
+        { name: "권경수", ssn: "750506-1481311", personalInfo: "A" },
+        { name: "강인모", ssn: "761208-1461010", personalInfo: "A" },
+        { name: "김대훈", ssn: "740506-1632410", personalInfo: "A" },
+        { name: "김동욱", ssn: "941211-1410910", personalInfo: "A" },
+        { name: "김영득", ssn: "820815-1462321", personalInfo: "A" },
+        { name: "백승범", ssn: "780901-1411319", personalInfo: "A" },
+        { name: "서동수", ssn: "970103-1352630", personalInfo: "A" },
+        { name: "안종근", ssn: "851127-1850119", personalInfo: "A" },
+        { name: "양지현", ssn: "780124-2400521", personalInfo: "A" },
+        { name: "엄정혜", ssn: "790810-2449317", personalInfo: "A" },
+        { name: "이정현", ssn: "860423-1409119", personalInfo: "A" },
+        { name: "이진섭", ssn: "930825-1409616", personalInfo: "A" },
+        { name: "전세연", ssn: "941124-1401625", personalInfo: "A" },
+        { name: "정수빈", ssn: "720529-1448830", personalInfo: "A" },
+        { name: "최규중", ssn: "940915-1580921", personalInfo: "A" },
+        { name: "한창희", ssn: "821201-1058916", personalInfo: "A" },
+        { name: "김현성", ssn: "830204-1650216", personalInfo: "A" },
+        { name: "박우신", ssn: "680817-1551914", personalInfo: "A" },
+        { name: "김덕현", ssn: "830605-1125646", personalInfo: "A" },
+        { name: "김철", ssn: "750710-1791916", personalInfo: "A" },
+        { name: "배종혁", ssn: "820523-1852016", personalInfo: "A" },
+        { name: "이재걸", ssn: "851127-1849714", personalInfo: "A" },
+        { name: "최은정", ssn: "981023-2854410", personalInfo: "A" },
+        { name: "목진호", ssn: "890227-1064110", personalInfo: "A" },
+        { name: "승민경", ssn: "780425-1476812", personalInfo: "A" },
+        { name: "이계진", ssn: "881123-1268411", personalInfo: "A" },
+        { name: "장택수", ssn: "770213-1120123", personalInfo: "A" },
+        { name: "김민주", ssn: "841218-2401118", personalInfo: "A" },
+        { name: "이상일", ssn: "960720-1727718", personalInfo: "A" },
+        { name: "이상일", ssn: "911227-1408818", personalInfo: "A" },
+        { name: "임구환", ssn: "880525-1409137", personalInfo: "A" },
+        { name: "조민구", ssn: "790113-1543016", personalInfo: "A" },
+        { name: "하수지", ssn: "931121-2537913", personalInfo: "A" },
+        { name: "한상욱", ssn: "880715-1055213", personalInfo: "A" },
+        { name: "김태연", ssn: "750308-1776118", personalInfo: "A" },
+        { name: "김태헌", ssn: "960423-1203611", personalInfo: "A" },
+        { name: "신수현", ssn: "910104-1629717", personalInfo: "A" },
+        { name: "유재선", ssn: "810124-1352011", personalInfo: "A" },
+        { name: "김미애", ssn: "791116-2408322", personalInfo: "A" },
+        { name: "박현수", ssn: "751210-1536331", personalInfo: "A" },
+        { name: "변영준", ssn: "741030-1674119", personalInfo: "A" },
+        { name: "김영수", ssn: "730622-1052813", personalInfo: "A" },
+
     ];
 
-    // �ֹε�Ϲ�ȣ�� ���� ��ȸ
+    // 주민등록번호로 정보 조회
     function lookup() {
         const ssn = document.getElementById('ssn').value;
 
@@ -69,26 +332,26 @@
             document.getElementById('lookup-error').innerText = '';
             showProfile(user);
         } else {
-            document.getElementById('lookup-error').innerText = '�ֹε�Ϲ�ȣ�� �Է��� �ּ���.';
+            document.getElementById('lookup-error').innerText = '주민등록번호를 입력해 주세요.';
         }
     }
 
-    // ������ ������ ���̱�
+    // 프로필 페이지 보이기
     function showProfile(user) {
         document.getElementById('user-name').innerText = user.name;
         document.getElementById('user-info').innerText = user.personalInfo;
 
         document.getElementById('lookup-form').classList.add('hidden');
         document.getElementById('profile').classList.remove('hidden');
-        document.getElementById('title').innerText = 'Profile';
+        document.getElementById('title').innerText = '24년도 다면평가 점수 확인';
     }
 
-    // �α׾ƿ� �Լ�
+    // 로그아웃 함수
     function logout() {
         document.getElementById('ssn').value = '';
         document.getElementById('lookup-form').classList.remove('hidden');
         document.getElementById('profile').classList.add('hidden');
-        document.getElementById('title').innerText = '2024�⵵ �ٸ��� ���� Ȯ���ϱ�';
+        document.getElementById('title').innerText = '2024년도 다면평가 점수 확인하기';
     }
 </script>
 

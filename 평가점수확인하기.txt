@@ -1,0 +1,96 @@
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>"2024년도 다면평가 점수 확인하기"</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 8px;
+            width: 90%;
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="title">"2024년도 다면평가 점수 확인하기"</h2>
+
+    <div id="lookup-form">
+        <div class="error" id="lookup-error"></div>
+        <input type="text" id="ssn" placeholder="주민등록번호 입력하기( - 까지 입력해주세요)" required>
+        <button onclick="lookup()">제출하기</button>
+    </div>
+
+    <div id="profile" class="hidden">
+        <h3>안녕하세요, <span id="user-name"></span>!</h3>
+        <p>귀하의 평가점수는 : <span id="user-info"></span>입니다.</p>
+        <button onclick="logout()">종료하기</button>
+    </div>
+</div>
+
+<script>
+    // 미리 저장된 사용자 데이터
+    const users = [
+        { name: "권순환", ssn: "123456-7890123", personalInfo: "A" },
+        { name: "Park Ji-sung", ssn: "987654-3210987", personalInfo: "Retired professional footballer" },
+        { name: "Lee Byung-hun", ssn: "456789-1234567", personalInfo: "Actor and director" }
+    ];
+
+    // 주민등록번호로 정보 조회
+    function lookup() {
+        const ssn = document.getElementById('ssn').value;
+
+        const user = users.find(user => user.ssn === ssn);
+
+        if (user) {
+            document.getElementById('lookup-error').innerText = '';
+            showProfile(user);
+        } else {
+            document.getElementById('lookup-error').innerText = '주민등록번호를 입력해 주세요.';
+        }
+    }
+
+    // 프로필 페이지 보이기
+    function showProfile(user) {
+        document.getElementById('user-name').innerText = user.name;
+        document.getElementById('user-info').innerText = user.personalInfo;
+
+        document.getElementById('lookup-form').classList.add('hidden');
+        document.getElementById('profile').classList.remove('hidden');
+        document.getElementById('title').innerText = 'Profile';
+    }
+
+    // 로그아웃 함수
+    function logout() {
+        document.getElementById('ssn').value = '';
+        document.getElementById('lookup-form').classList.remove('hidden');
+        document.getElementById('profile').classList.add('hidden');
+        document.getElementById('title').innerText = '2024년도 다면평가 점수 확인하기';
+    }
+</script>
+
+</body>
+</html>
